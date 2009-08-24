@@ -89,7 +89,7 @@ char   *str_not(UDF_INIT *initid, UDF_ARGS *args, char *result,
 
 my_bool str_not_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
-    if (args->arg_count < 1) {
+    if (args->arg_count != 1) {
         sprintf(message, "STR_NOT() accepts exactly 1 argument (got %d)",
                 args->arg_count);
         return 1;
