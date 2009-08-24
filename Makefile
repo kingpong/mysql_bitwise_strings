@@ -13,9 +13,9 @@ CC = gcc
 SOURCES := $(wildcard *.c)
 OBJECTS := $(SOURCES:.c=.o)
 
-MYSQL_USER = philip
-MYSQL_PASS = philip
-MYSQL_DATABASE = philip
+#MYSQL_USER = philip
+#MYSQL_PASS = philip
+#MYSQL_DATABASE = philip
 
 UNAME := $(shell /bin/sh -c "uname | tr A-Z a-z")
 ifeq ($(UNAME),darwin)
