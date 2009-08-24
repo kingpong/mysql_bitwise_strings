@@ -15,9 +15,9 @@ This doesn't really prove anything, it just a little confidence booster.
 
 =cut
 
-#sub OPERAND_MAX()  { 1024 }
-sub OPERAND_MAX()  { 4096 }
-sub TESTS_PER_OP() { 256  }
+sub OPERAND_MAX()  { 1024 }
+# turn this up to test for memory leaks
+sub TESTS_PER_OP() { 128 }
 
 for my $i (1..TESTS_PER_OP) {
     my ($left,$right) = (operand(),operand());

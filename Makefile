@@ -15,6 +15,7 @@ OBJECTS := $(SOURCES:.c=.o)
 
 MYSQL_USER = philip
 MYSQL_PASS = philip
+MYSQL_DATABASE = philip
 
 UNAME := $(shell /bin/sh -c "uname | tr A-Z a-z")
 ifeq ($(UNAME),darwin)
@@ -30,23 +31,36 @@ else
  MYSQL = mysql
 endif
 
-.PHONY: all
+FUNCS = ./funcs.sh MYSQL_DATABASE=$(MYSQL_DATABASE) SONAME=bitwise.$(SOSUFFIX)
+
+.PHONY: all sql-up sql-down uninstall install test
+
 all: bitwise.$(SOSUFFIX)
 
 clean:
 	rm -f *.o *.$(SOSUFFIX)
 
-uninstall:
-	sudo ./uninstall_funcs.sh MYSQL=$(MYSQL) SONAME=bitwise.$(SOSUFFIX)
+sql-up:
+	@$(FUNCS) up
 
-install: all uninstall
-	sudo mkdir -p $(DEST)
-	sudo cp bitwise.$(SOSUFFIX) $(DEST)
-	sudo chmod 644 $(DEST)/bitwise.$(SOSUFFIX)
-	sudo ./install_funcs.sh MYSQL=$(MYSQL) SONAME=bitwise.$(SOSUFFIX)
+sql-down:
+	@$(FUNCS) down
+
+uninstall-sql:
+	@echo This is your MySQL root password:
+	@$(FUNCS) down | $(MYSQL) -u root -p -D $(MYSQL_DATABASE)
+
+install-module: all
+	mkdir -p $(DEST)
+	cp bitwise.$(SOSUFFIX) $(DEST)
+	chmod 644 $(DEST)/bitwise.$(SOSUFFIX)
+
+install-sql: all
+	@echo This is your MySQL root password:
+	@$(FUNCS) up | $(MYSQL) -u root -p -D $(MYSQL_DATABASE)
 
 test:
-	./test.rb -u "$(MYSQL_USER)" -p "$(MYSQL_PASS)"
+	./test.rb -u "$(MYSQL_USER)" -p "$(MYSQL_PASS)" -d $(MYSQL_DATABASE)
 
 bitwise.$(SOSUFFIX): $(OBJECTS)
 	gcc $(SOFLAGS) -o $@ $(OBJECTS)

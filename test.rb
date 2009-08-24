@@ -4,14 +4,13 @@ require "test/unit"
 
 $user = nil
 $pass = nil
+$db = nil
 while !ARGV.empty?
   case ARGV.shift
-  when '-u'
-    $user = ARGV.shift
-  when '-p'
-    $pass = ARGV.shift
-  else
-    raise "unrecognized argument '#{opt}'"
+  when '-u' then $user = ARGV.shift
+  when '-p' then $pass = ARGV.shift
+  when '-d' then $db = ARGV.shift
+  else raise "unrecognized argument '#{opt}'"
   end
 end
 
